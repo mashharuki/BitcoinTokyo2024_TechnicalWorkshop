@@ -3,3 +3,5 @@ SHA256SUM*
 **/bitcoin_datadir
 
 **/target
+
+**/.DS_Store
