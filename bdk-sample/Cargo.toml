@@ -1,0 +1,13 @@
+[package]
+name = "bdk-sample"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "example"
+path = "src/example.rs"
+
+[dependencies]
+bdk = { version = "0.28.1", default-feature = false, features = ["all-keys"] }
+bdk_file_store = "0.16.0"
+bdk_wallet = "1.0.0-beta.4"

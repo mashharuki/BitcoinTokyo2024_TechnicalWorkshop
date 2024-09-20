@@ -20,22 +20,22 @@
 
   [Signet - tb1qm6xmp7nmva72fps3jstkpu2mpsvsj5vc2p06tf](https://explorer.bc-2.jp/address/tb1qm6xmp7nmva72fps3jstkpu2mpsvsj5vc2p06tf)
 
-- BDK CLIのインストール
+- BDK CLI のインストール
 
   ```bash
-  cargo install bdk-cli --features=compiler,regtest-bitcoin 
+  cargo install bdk-cli --features=compiler,regtest-bitcoin
   ```
 
   以下でバージョン情報を確認する。
 
   ```bash
   bdk-cli --version
-  ``` 
+  ```
 
 - スクリプトのコンパイル
 
   ```bash
-  bdk-cli compile ‘and(pk(A),or(pk(B),or(9@pk(C),older(1000))))’
+  bdk-cli compile 'and(pk(A),or(pk(B),or(9@pk(C),older(1000))))'
   ```
 
   ```json
@@ -51,7 +51,7 @@
   ```
 
   ```bash
-  bdk-cli key derive 
+  bdk-cli key derive
   ```
 
   以下のように組み合わせることもできる。
@@ -62,17 +62,56 @@
 
   ```json
   {
-    "xprv": "[52f082cd/84/1/0/0]tprv8i62LVBiNzCYm4u6qEsz9KTQZeyFUF1DNKrxesjXu4T6Vjes3Qy18w3r7BdAeirDhB32jpmkzgMWnzdvRB3QLVCAVhNAWN7zx22goXG1AKv/*",
-    "xpub": "[52f082cd/84/1/0/0]tpubDEn4UuDxXMtDeXvtitYaYj7X8gVBdaC7wdTjwPmqKLFVLDudfonbKRfiHLopHySXjScDg6dHwz4UdUmYS52n587XCVYiPgCGGvbGRDWVXxq/*"
+    "xprv": "[8363c57a/84/1/0/0]tprv8ipJLdeSxdgmsVBJDd1aymCPLe7v8UVgQtMU6nkzWLcJNEKtGPjQYFrqEAm5krFV2KN3BqFgPgMZWrGroEGLh3q2UqLGhAqzwMDphs9T1ak/*",
+    "xpub": "[8363c57a/84/1/0/0]tpubDFWLV3gh71NSkxD67GgBPArVufdrHogazBxFPJoHvcQhCiaetnYzikUhQLFQhCmSKPsButsgnYEPAknDTFAxee989dcPKSpPC2JdzjWc3J6/*"
   }
   ```
 
-- bdk cliのオンライン機能を試す方法
+- bdk cli のオンライン機能を試す方法
 
   `docker_for_bdkcli` ディレクトリ配下で実行すること
 
   ```bash
-  docker compose up 
+  docker compose up
+  ```
+
+  立ち上がったら以下のコマンドを実行してみる。
+
+  ```bash
+  bdk-cli-example.sh
+  ```
+
+- BDK のウォレット機能を改造してみる。
+
+  ```bash
+  git clone https://github.com/bitcoindevkit/bdk
+  ```
+
+  以下のディレクトリに移動する。
+
+  ```bash
+  cd bdk/example-crates/wallet_rpc
+  ```
+
+  以下のコマンドを実行
+
+  ```bash
+  cargo run --bin wallet_rpc -- --rpc-user=foo --rpc-pass=bar --network=regtest --start-height=1 --url=127.0.0.1:43782 "wpkh([8363c57a/84/1/0/0]tprv8ipJLdeSxdgmsVBJDd1aymCPLe7v8UVgQtMU6nkzWLcJNEKtGPjQYFrqEAm5krFV2KN3BqFgPgMZWrGroEGLh3q2UqLGhAqzwMDphs9T1ak/*)" "wpkh([8363c57a/84/1/0/0]tprv8ipJLdeSxdgmsVBJDd1aymCPLe7v8UVgQtMU6nkzWLcJNEKtGPjQYFrqEAm5krFV2KN3BqFgPgMZWrGroEGLh3q2UqLGhAqzwMDphs9T1ak/1/*)"
+  ```
+
+  以下のような結果が得られます。
+
+  ```bash
+  Connected to Bitcoin Core RPC at GetBlockchainInfoResult { chain: Regtest, blocks: 0, headers: 0, best_block_hash: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206, difficulty: 4.6565423739069247e-10, median_time: 1296688602, verification_progress: 1.0, initial_block_download: true, chain_work: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], size_on_disk: 293, pruned: false, prune_height: None, automatic_pruning: None, prune_target_size: None, softforks: {}, warnings: String("") }
+  Loaded wallet in 0.038738918s
+  Wallet balance before syncing: 0 BTC
+  Wallet tip: 0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206 at height 0
+  ```
+
+- BDK の RPC CLI を試してみる。
+
+  ```bash
+  docker compose exec -it bitcoind -datadir=/tmp/regtest/bitcoind -regtest -rpcuser=foo -rpcpassword=foo -named createwallet wallet_name="test"
   ```
 
 ### 参考文献
@@ -97,3 +136,5 @@
 18. [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
 19. [2-of-2 マルチシグで送金したトランザクション履歴](https://mempool.space/signet/tx/a406fe0b1aeb88504fb3345c04fdcacf7b77bdcabbf82b744f0706e8283c809a)
 20. [Bitcoin Dev Kit Getstarted](https://bitcoindevkit.org/getting-started/)
+21. [Docs - Crate bdk_wallet](https://docs.rs/bdk_wallet/latest/bdk_wallet/)
+22. [Using BDK with hardware wallets](https://bitcoindevkit.org/blog/using-bdk-with-hardware-wallets/)
